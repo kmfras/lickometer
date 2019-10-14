@@ -8,7 +8,7 @@ microstructural analysis of rodent fluid consumption
 
 This project is a cost-effective solution (~$75 per system) to the recording of licking during the consumption of liquid rewards.
 
-JanakLickometer.pdf contains an overview of the design of the lickometer and step-by-step constructions for parts ordering to the analysis
+JanakLickometer.pdf contains an overview of the design of the lickometer and step-by-step constructions for parts ordering all the way to the analysis
 of the data
 
 LicksLaser.ino is the Arduino control code for running the lickometer
