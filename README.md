@@ -20,5 +20,5 @@ AnalyzeLicks.m separates lick data into the units of rodent fluid consumption, b
 are separated by inter-lick intervals of less than 0.25 seconds. Clusters are a more conservative estimate of consumption and are 
 composed of bouts of licks separated by inter-lick intervals of less than 1 second. The number of bursts and/or clusters reflects
 motivational processes in consumption whereas the number of licks per each burst and/or cluster reflects palatability of the consumed
-substance. For more on rodent fluid consumption see Davis Jd and Perez MC 1993; Spector AC St. John SJ 1998;  Spector AC, Klumpp PA Kaplan JM 1998.
+substance. For more on rodent fluid consumption see Davis Jd and Perez MC 1993; Spector AC St. John SJ 1998;  Spector AC, Klumpp PA, Kaplan JM 1998.
 
