@@ -16,9 +16,8 @@ LicksLaser.ino is the Arduino control code for running the lickometer
 ReadTwoBottle.m is MATLAB code for extracting data from the Arduino generated files from a lickometer system that was recording from
 two sensors and logging stimulation times for optogenetics.
 
-AnalyzeLicks.m separates lick data into the units of rodent fluid consumption, bursts and clusters. Bursts are bouts of licks that
-are separated by inter-lick intervals of less than 0.25 seconds. Clusters are a more conservative estimate of consumption and are 
-composed of bouts of licks separated by inter-lick intervals of less than 1 second. The number of bursts and/or clusters reflects
+AnalyzeLicks.m is MATLAB code that separates lick data into the units of rodent fluid consumption, bursts and clusters. Bursts are bouts of licks thatare separated by inter-lick intervals of less than 0.25 seconds. Clusters are a more conservative estimate of consumption 
+and are composed of bouts of licks separated by inter-lick intervals of less than 1 second. The number of bursts and/or clusters reflects
 motivational processes in consumption whereas the number of licks per each burst and/or cluster reflects palatability of the consumed
 substance. For more on rodent fluid consumption see Davis JD and Perez MC 1993; Spector AC St. John SJ 1998;  Spector AC, Klumpp PA, Kaplan JM 1998.
 
