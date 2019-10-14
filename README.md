@@ -6,7 +6,7 @@ Included are the associated arduino control code and example MATLAB analysis cod
 microstructural analysis of rodent fluid consumption
 
 
-This project is a cost-effective solution to the recording of licking during the consumption of liquid rewards.
+This project is a cost-effective solution (~$75 per system) to the recording of licking during the consumption of liquid rewards.
 
 JanakLickometer.pdf contains an overview of the design of the lickometer and step-by-step constructions for parts ordering to the analysis
 of the data
