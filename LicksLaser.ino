@@ -3,8 +3,9 @@
 //The code sd() runs the code to open the logXXXX data file, write the data, clear the dataString to keep the arduino buffer functional, and close the file everytime new data is generated
 //dataString is a list of text that includes the milliseconds an event occured and the title of the event. 
 //Data in the resulting single .txt file will be listed in the format { YYYY, lickC, ZZZ, lickL, etc.).
-//The arduino will generate a new text file everytime it is reset or turned on, but you will not be able to know the name of the text file so IT IS IMPERATIVE THAT THE SD REMOVED AND DATA TRANSFERRED AND RENAMED AFTER EACH SESSION. 
-//Last Updated April 17, 2019
+//The arduino will generate a new text file everytime it is reset or turned on, but you will not be able to know the name of the text file so IT IS IMPERATIVE THAT THE SD REMOVED AND DATA TRANSFERRED AND RENAMED AFTER EACH SESSION.
+//Alter threshold settings in the CPP file in the arduino libraries. There may be warnings on compile but they don't impact updating the thresholds or uploading sketch to arduino. 
+//Last Updated December 12, 2019
 
 #include <SPI.h>
 #include <SD.h>
@@ -24,9 +25,9 @@ int stimState = LOW;
 unsigned long currMillis = {0};
 unsigned long prevMillis = {0};
 
-
-long OnTime = 10;
-long OffTime = 990;
+// define stimulation time here 
+long OnTime = 10; //this is the time the TTL is high
+long OffTime = 990;  //this is the delay between each stim (should equal stim length minus 10 ms)
 
 String datalogName = "log";
 String dataString = "";
@@ -97,30 +98,29 @@ void loop()
   currtouched = cap.touched();
 //if it wasn't touched and now it is
 
-//this should detect if the sensor on 0 was touched and if so initiate recording that event.
+//this detects if the sensor on 0 was touched and if so initiate recording that event.
   if ((currtouched & _BV(0)) && !(lasttouched & _BV(0))) 
     {
     lickC();
     }
 
-//this should detect if the sensor on 5 was touched and if so initiate recording that event and the laser stimulation pulse.
+//this detects if the sensor on 5 was touched and if so initiate recording that event and the laser stimulation pulse if appropriate.
   if ((currtouched & _BV(5)) && !(lasttouched & _BV(5)))  
     {
     lickL();
-    if ((stimState == LOW) && (currMillis - prevMillis >= OffTime)) {
-stimState = HIGH;
+//comment this out if no desire to produce stimulation, this triggers stimulation on lick detection if the appropriate delay has occurred between this and the previous lick
+    if ((stimState == LOW) && (currMillis - prevMillis >= OffTime)) 
+      {
+      stimState = HIGH;
       prevMillis = currMillis;
       digitalWrite (stimPin, HIGH);
       laser();
-   }
-    else if ((stimState == HIGH) && (currMillis - prevMillis >= OnTime)) {
-      stimState = LOW;
-      prevMillis = currMillis;
-      digitalWrite (stimPin, LOW);
-   }
+      }
     }
     
   lasttouched = currtouched;
+  
+  stimreset();
   
   sd();             
 }
@@ -141,15 +141,18 @@ void lickL()
 } 
 
 void laser()
-//Timestamp the onset on the pulse, send the pulse, and wait 1s before you are able to send another. (set time of stimulation required here, stimulation parameters are determined by the Master9)
-//Simply comment this out if you wish to only record licks absent any stimulation
+//Timestamp the onset on the pulse. (stimulation parameters are determined by the Master9)
 {
   dataString += String(millis());
   dataString += ", laser, ";
-  digitalWrite(8, HIGH);
-  delay(10);
-  digitalWrite(8, LOW);
 } 
+
+void stimreset()
+//resets the TTL state 10 ms after it was set to high
+{  if ((stimState == HIGH) && (currMillis - prevMillis >= OnTime)) 
+      stimState = LOW;
+      digitalWrite (stimPin, LOW);
+}
 
 void sd()
 {
