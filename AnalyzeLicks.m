@@ -1,12 +1,59 @@
-%% find number of bursts and clusters made for each bottle type with cluster and burst cutoff criteria
+    
+%to look at all sessions, 1:length(Data)
+%to look at 1 session, just put "session=2" or whichever session
+%for session=1:length(Data)
+for session=13
+    name=Data{session,1};
+    
+    figure;
+    for i=1:length(Data{session,2})
+        licks(i,1)=length(Data{session,2}{i,1});
+        licks(i,2)=length(Data{session,2}{i,2});
+
+    end
+
+    subplot(1,2,1)
+    hold on;
+    plot(1:2,licks(1:10,:));
+    xticks(1:2);
+    xticklabels({'Control','Laser'});
+    axis([0.5 2.5 0 max(max(licks))+200]);
+    ylabel('Licks');
+    title('ChR2 rats');
+    text(1,max(max(licks)),name);
+
+
+    
+    data1=licks(:,1);
+    data2=licks(:,2);
+    group=cat(1,ones(10,1),zeros(6,1));
+    tbl=table(data1,data2,group,'variablenames',{'control','laser','ChR2'});
+    rm = fitrm(tbl,'control-laser~ChR2');
+    stats=ranova(rm);
+    LaserChR2Int.F(session,1)=stats.F(2);
+    LaserChR2Int.PVal(session,1)=stats.pValue(2);
+    
+    text(1.2,max(max(licks))-100,['p = ' num2str(LaserChR2Int.PVal(session,1))]);
+    
+    subplot(1,2,2)
+    hold on;
+    plot(1:2,licks(11:16,:));
+    xticks(1:2);
+    xticklabels({'Control','Laser'});
+    axis([0.5 2.5 0 max(max(licks))]);
+    ylabel('Licks');
+    title('YFP rats');
+end
+
+%% number of bursts
+plotting=0;
 clustercutoff=1000;
 burstcutoff=250;
 lickcutoff=3;
 for session=1:length(Data)
     for rat=1:length(Data{session,2})
         
-        %find number of lick clusters
-        %licktype 1 for laser bottle and 2 for control bottle
+        %lick clusters
         for licktype=1:2
             typelicks=Data{session,2}{rat,licktype};
             typediff=diff(typelicks);
@@ -37,11 +84,8 @@ for session=1:length(Data)
                         end
                     end
                 end
-                %find number of licks per cluster
                 clusterlicks{session,1}{rat,licktype}=numclustlicks(isnan(firstinclust)==0);
-                %find total number of clusters
                 clusters{session,1}(rat,licktype)=sum(isnan(firstinclust)==0);
-                %find mean and median number of clusters
                 clusterlickmedian{session,1}(rat,licktype)=median(clusterlicks{session,1}{rat,licktype});
                 clusterlickmean{session,1}(rat,licktype)=mean(clusterlicks{session,1}{rat,licktype});
             else
@@ -52,7 +96,7 @@ for session=1:length(Data)
             end
         end
 
-        %find number of lick bursts
+        %lick bursts
         for licktype=1:2
             typelicks=Data{session,2}{rat,licktype};
             typediff=diff(typelicks);
@@ -96,5 +140,43 @@ for session=1:length(Data)
             end
         end
     end
+    
+    name=Data{session,1};
+    if plotting
+        figure;
+
+        subplot(1,2,1)
+        hold on;
+        plot(1:2,burstlickmedian{session,1}(1:10,:));
+        xticks(1:2);
+        xticklabels({'Control','Laser'});
+        axis([0.5 2.5 0 max(max(burstlickmedian{session,1}))+5]);
+        ylabel('Bursts');
+        title('ChR2 rats');
+        text(1,max(max(burstlickmedian{session,1})),name);
+
+
+
+        data1=burstlickmedian{session,1}(:,1);
+        data2=burstlickmedian{session,1}(:,2);
+        group=cat(1,ones(10,1),zeros(6,1));
+        tbl=table(data1,data2,group,'variablenames',{'control','laser','ChR2'});
+        rm = fitrm(tbl,'control-laser~ChR2');
+        stats=ranova(rm);
+        LaserChR2Int.F(session,1)=stats.F(2);
+        LaserChR2Int.PVal(session,1)=stats.pValue(2);
+
+        text(1.2,max(max(burstlickmedian{session,1}))-7,['p = ' num2str(LaserChR2Int.PVal(session,1))]);
+
+        subplot(1,2,2)
+        hold on;
+        plot(1:2,burstlickmedian{session,1}(11:16,:));
+        xticks(1:2);
+        xticklabels({'Control','Laser'});
+        axis([0.5 2.5 0 max(max(burstlickmedian{session,1}))+5]);
+        ylabel('Bursts');
+        title('YFP rats');
+    end
+    
 end
         
